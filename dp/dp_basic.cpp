@@ -5,6 +5,9 @@
 #include <vector>
 using namespace std;
 //算法导论 切割钢条
+// dp[N]表示长度为N的最优解；
+// 从k切割，产生dp[k]和dp[n-k]的两个子问题；
+// dp[n] = max(dp[k]+dp[n-k], dp[n]); k: 0 -> n;
 class Solution {
    public:
     int cutRodSloution(vector<int> &nums, int len) {
@@ -81,3 +84,10 @@ int main() {
     cout << m[1][6] << endl;
     printOptimalParens(posK, 1, 6);
 }
+
+最优挖掘子结构性质：
+1、做出一个选择；如第一次切割位置k，会产生一个或多个待解决的子问题；
+2、假定这选择会得到最优解；
+3、假定可获得最优解后，确定会产生哪些子问题，以及如何最好的刻画子问题空间；
+4、利用cut-paste技术证明，作为原问题最优解的组成部分，每个子问题的解就是它本身的最优解；
+

@@ -38,13 +38,30 @@
 // 链接：https://leetcode-cn.com/problems/video-stitching
 // 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-// 动态规划：
+// 错误动态规划：
+// i       j
+// |-------|
+//     |
+//     k
+// 对于区间i,j,最少的视频个数是dp[i,j];
+//     dp[i,j] = min{dp[i,k]+dp[k+1,j], dp[i,j]};   i<= k < j
+//======>错误规划，因为可能可能存在：
+//        k  k+1
+//        ↓   ↓
+// |-------------|
+//     |-------------|
+//     ↑             ↑
+//     i             j
+// dp[i,k]的最优值1，和dp[k+1,j]最优值2,存在重叠；
+
+
+// 正确动态规划：
 // 0       N
 // |-------|
 //     |------|
 //    left   right
 // 对于区间N,最少的视频个数是dp[N]; dp[0] =0;
-//     dp[N] = min(dp[N-left], dp[N]);
+//     dp[N] = min(dp[N-left]+1, dp[N]);
 class Solution {
    public:
     int videoStitching(vector<vector<int>>& clips, int T) {
