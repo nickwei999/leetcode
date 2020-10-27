@@ -43,7 +43,7 @@
 
 // 方法二：
 // 将金额为n的最少兑换为dp[n];
-// dp[n] = min{dp[n-1] + coins[k]}; 0 <= k < coins.size();
+// dp[n] = min{dp[n-coins[k]] + 1}; 0 <= k < coins.size();
 
 class Solution {
     vector<int> count;
