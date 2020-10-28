@@ -36,14 +36,14 @@
 // 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 // 动态规划：
-// 方法一：
+// 方法一（超时）：
 // 将金额为n的最少兑换为dp[n];
 // dp[n] = min{ d[k] + dp[n-k] };  0 <= k <= n/2;
 // 此方法通用，但是k在移动，会计算出很多不必要的中间过程；
 
 // 方法二：
 // 将金额为n的最少兑换为dp[n];
-// dp[n] = min{dp[n-1] + coins[k]}; 0 <= k < coins.size();
+// dp[n] = min{dp[n-coins[k]] + 1}; 0 <= k < coins.size();
 
 class Solution {
     vector<int> count;
