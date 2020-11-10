@@ -20,6 +20,8 @@
 // 4、反转[i+1,N];  reverse(data.begin()+i+1, data.end());
 // 时间复杂度O(n),空间复杂度O(1);
 
+// C++库方法 https://en.cppreference.com/w/cpp/algorithm/next_permutation
+
 class Solution {
    public:
     void nextPermutation(vector<int>& nums) {
