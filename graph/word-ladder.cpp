@@ -44,9 +44,9 @@
 
 class Solution {
    public:
-    bool findFinaltWord(const string &endWord,
-                        unordered_map<string, bool> &dirWord,
-                        queue<string> &que) {
+    bool findFinalWord(const string &endWord,
+                       unordered_map<string, bool> &dirWord,
+                       queue<string> &que) {
         string lastWord = que.front();
         que.pop();
         if (lastWord == endWord) {
@@ -85,8 +85,168 @@ class Solution {
             ++res;
             int bfsCnt = que.size();
             for (int i = 0; i < bfsCnt; ++i) {
-                if (findFinaltWord(endWord, dirWord, que)) {
+                if (findFinalWord(endWord, dirWord, que)) {
                     return res;
+                }
+            }
+        }
+        return 0;
+    }
+};
+
+// 双向bfs：
+// 维护两个方向的已访问表；
+// 维护两个队列；
+// 每一轮从两个方向同时bfs，如果一方遍历到对方的已访问列表说明两方相遇；
+class Solution {
+   public:
+    bool findFinalWord(int queID, unordered_set<string> &dirWord,
+                       unordered_set<string> (&visitWord)[2],
+                       queue<string> (&InputQue)[2]) {
+        auto &que = InputQue[queID];
+        auto &selfVisit = visitWord[queID];
+        auto &otherVisit = visitWord[1 - queID];
+        int queSize = que.size();
+        while (queSize--) {
+            auto lastWord = que.front();
+            que.pop();
+            for (int j = 0; j < lastWord.size(); ++j) {
+                string tmpWord = lastWord;
+                for (char ch = 'a'; ch <= 'z'; ++ch) {
+                    if (tmpWord[j] == ch) {
+                        continue;
+                    }
+                    tmpWord[j] = ch;
+                    if (otherVisit.count(tmpWord)) {
+                        return true;
+                    }
+                    //字典不存在或自己访问过了
+                    if (!dirWord.count(tmpWord) || selfVisit.count(tmpWord)) {
+                        continue;
+                    }
+                    selfVisit.insert(tmpWord);
+                    que.push(tmpWord);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    int ladderLength(string beginWord, string endWord,
+                     vector<string> &wordList) {
+        unordered_set<string> dirWord;
+        for (auto &x : wordList) {
+            dirWord.insert(x);
+        }
+        if (!dirWord.count(endWord)) {
+            return 0;
+        }
+
+        unordered_set<string> visitWord[2];
+        visitWord[0].insert(beginWord);
+        visitWord[1].insert(endWord);
+
+        queue<string> que[2];
+        que[0].push(beginWord);
+        que[1].push(endWord);
+
+        int res = 1;
+        while (!que[0].empty() && !que[1].empty()) {
+            ++res;
+            if (findFinalWord(0, dirWord, visitWord, que)) return res;
+            ++res;
+            if (findFinalWord(1, dirWord, visitWord, que)) return res;
+        }
+        return 0;
+    }
+};
+
+//官方使用双向bfs
+// 并且引入虚拟边建虚拟节点。对于单词 hit，我们创建三个虚拟节点 *it、h*t、hi*，
+// 并让 hit 向这三个虚拟节点分别连一条边即可。如果一个单词能够转化为 hit，
+// 那么该单词必然会连接到这三个虚拟节点之一。对于每一个单词，我们枚举它连接到的虚拟节点，
+// 把该单词对应的 id 与这些虚拟节点对应的 id 相连即可。
+
+// 最后我们将起点加入队列开始广度优先搜索，当搜索到终点时，我们就找到了最短路径的长度。
+// 注意因为添加了虚拟节点，所以我们得到的距离为实际最短路径长度的两倍。
+// 同时我们并未计算起点对答案的贡献，所以我们应当返回距离的一半再加一的结果。
+class Solution {
+   public:
+    unordered_map<string, int> wordId;
+    vector<vector<int>> edge;
+    int nodeNum = 0;
+    void addWord(string &word) {
+        if (!wordId.count(word)) {
+            wordId[word] = nodeNum++;
+            edge.emplace_back();
+        }
+    }
+
+    void addEdge(string &word) {
+        addWord(word);
+        int id1 = wordId[word];
+        for (char &it : word) {
+            char tmp = it;
+            it = '*';
+            addWord(word);
+            int id2 = wordId[word];
+            edge[id1].push_back(id2);
+            edge[id2].push_back(id1);
+            it = tmp;
+        }
+    }
+
+    int ladderLength(string beginWord, string endWord,
+                     vector<string> &wordList) {
+        for (string &word : wordList) {
+            addEdge(word);
+        }
+        addEdge(beginWord);
+        if (!wordId.count(endWord)) {
+            return 0;
+        }
+
+        vector<int> disBegin(nodeNum, INT_MAX);
+        int beginId = wordId[beginWord];
+        disBegin[beginId] = 0;
+        queue<int> queBegin;
+        queBegin.push(beginId);
+
+        vector<int> disEnd(nodeNum, INT_MAX);
+        int endId = wordId[endWord];
+        disEnd[endId] = 0;
+        queue<int> queEnd;
+        queEnd.push(endId);
+
+        while (!queBegin.empty() && !queEnd.empty()) {
+            int queBeginSize = queBegin.size();
+            for (int i = 0; i < queBeginSize; ++i) {
+                int nodeBegin = queBegin.front();
+                queBegin.pop();
+                if (disEnd[nodeBegin] != INT_MAX) {
+                    return (disBegin[nodeBegin] + disEnd[nodeBegin]) / 2 + 1;
+                }
+                for (int &it : edge[nodeBegin]) {
+                    if (disBegin[it] == INT_MAX) {
+                        disBegin[it] = disBegin[nodeBegin] + 1;
+                        queBegin.push(it);
+                    }
+                }
+            }
+
+            int queEndSize = queEnd.size();
+            for (int i = 0; i < queEndSize; ++i) {
+                int nodeEnd = queEnd.front();
+                queEnd.pop();
+                if (disBegin[nodeEnd] != INT_MAX) {
+                    return (disBegin[nodeEnd] + disEnd[nodeEnd]) / 2 + 1;
+                }
+                for (int &it : edge[nodeEnd]) {
+                    if (disEnd[it] == INT_MAX) {
+                        disEnd[it] = disEnd[nodeEnd] + 1;
+                        queEnd.push(it);
+                    }
                 }
             }
         }
