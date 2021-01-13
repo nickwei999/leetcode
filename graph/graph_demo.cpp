@@ -42,3 +42,47 @@ class Solution {
 }
 
 //拓扑排序
+
+//并查集:
+/* 复杂度：
+时间复杂度：O(NlogN)，其中 N 是图中的节点个数。需要遍历图中的 N
+条边，对于每条边，需要对两个节点查找祖先，如果两个节点的祖先不同则需要进行合并
+需要进行 2 次查找和最多 1 次合并。一共需要进行 2N 次查找和最多 N
+次合并，因此总时间复杂度是 O(2NlogN)=O(NlogN)。 */
+
+class UnionSet {
+   private:
+    vector<int> root, rank;
+    int size;
+
+   public:
+    UnionSet(int n) {
+        root.resize(n + 1);
+        rank.resize(n + 1);
+        for (int i = 1; i <= n; ++i) {
+            root[i] = i;
+            rank[i] = 1;
+        }
+        size = n;
+    }
+
+    // 路径压缩
+    int find(int i) { return (root[i] != i) ? (root[i] = find(root[i])) : i; }
+
+    // 成环返回
+    bool join(int i, int j) {
+        int iR = find(i);
+        int jR = find(j);
+        if (iR == jR) {
+            return false;
+        }
+
+        /* 按秩合并 */
+        if (rank[iR] < rank[jR]) {
+            swap(iR, jR);
+        }
+        root[jR] = root[iR];
+        rank[iR] += rank[jR];
+        return true;
+    }
+};
