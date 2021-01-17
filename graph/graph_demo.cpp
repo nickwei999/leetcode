@@ -1,3 +1,7 @@
+求解多少个连通分量： bfs/dfs、并查集；
+求解是否成环：拓扑排序；
+
+
 // 双向bfs
 class Solution {
     queue<int> qu[2];
