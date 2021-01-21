@@ -1,6 +1,7 @@
 求解多少个连通分量： bfs/dfs、并查集；
 求解是否成环：拓扑排序；
 
+最小生成树： Kruskal算法，是时间复杂度一般是 O(mlogm)
 
 // 双向bfs
 class Solution {
@@ -54,6 +55,12 @@ class Solution {
 需要进行 2 次查找和最多 1 次合并。一共需要进行 2N 次查找和最多 N
 次合并，因此总时间复杂度是 O(2NlogN)=O(NlogN)。 */
 
+/* 小技巧：
+1、并查集建立点，一般可以直接是数组，然后按照下标索引；
+    涉及到坐标的可以将 x*ColNums + y;
+    如果是两两互联的，可以是 第i个点和第j个点；
+2、建立有时候也可以是hash表，比如字符串等；
+ */
 class UnionSet {
    private:
     vector<int> root, rank;
@@ -90,3 +97,4 @@ class UnionSet {
         return true;
     }
 };
+
