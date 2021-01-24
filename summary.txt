@@ -43,3 +43,4 @@ STL tricks:
 图论：
 求解多少个连通分量： bfs/dfs、并查集；
 求解是否成环：拓扑排序；
+最小生成树： kruskal和prim算法；
