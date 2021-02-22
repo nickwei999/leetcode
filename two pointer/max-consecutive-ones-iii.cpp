@@ -81,3 +81,24 @@ class Solution {
         return res;
     }
 };
+
+/* 前缀和：
+每个位置记录从开始到当前有多少个0；两个相减即中间有多少个0；
+如果两者差大于K，那么移动左指针，直到差小于K;更新距离 */
+class Solution {
+   public:
+    int longestOnes(vector<int>& A, int K) {
+        int n = A.size();
+        int left = 0, lsum = 0, rsum = 0;
+        int ans = 0;
+        for (int right = 0; right < n; ++right) {
+            rsum += 1 - A[right];
+            while (lsum < rsum - K) {
+                lsum += 1 - A[left];
+                ++left;
+            }
+            ans = max(ans, right - left + 1);
+        }
+        return ans;
+    }
+};
