@@ -73,3 +73,60 @@ class Solution {
         return res;
     }
 };
+
+/* 方法二：
+分治算法：
+假设某个字符出现次数小于K,
+那么包含该字符的子串都不可能是答案；
+即可以以该字符进行分割字符串；
+
+复杂度：
+时间复杂度：O(N⋅∣Σ∣)，其中 NN 为字符串的长度，Σ 为字符集，
+由于每次递归调用都会完全去除某个字符，因此递归深度最多为 ∣Σ∣。
+
+空间复杂度：O(∣Σ∣^ 2)。递归的深度为 O(∣Σ∣)，每层递归需要开辟 O(∣Σ∣) 的额外空间。
+ */
+
+class Solution {
+   public:
+    int dfs(string &s, int l, int r, int k) {
+        vector<int> cnt(26, 0);
+        for (int i = l; i <= r; ++i) {
+            int idx = s[i] - 'a';
+            cnt[idx]++;
+        }
+        char spilt = 0;
+        for (int i = 0; i < 26; ++i) {
+            if (cnt[i] > 0 && cnt[i] < k) {
+                spilt = i + 'a';
+            }
+        }
+
+        // 不需要分割
+        if (spilt == 0) {
+            return r - l + 1;
+        }
+
+        int res = 0;
+        while (l <= r) {
+            while (l <= r && s[l] == spilt) {
+                l++;
+            };
+            if (l > r) break;
+            int start = l;
+            while (l <= r && s[l] != spilt) {
+                l++;
+            };
+            res = max(res, dfs(s, start, l - 1, k));
+        }
+
+        return res;
+    }
+
+    int longestSubstring(string s, int k) {
+        // 任何一个字符出现次数小于k，那包含该字符的子串都不可能是结果；
+        //  以该字符作为分割进行分治算法；
+        if (k == 1) return s.size();
+        return dfs(s, 0, s.size() - 1, k);
+    }
+};
