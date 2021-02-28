@@ -75,3 +75,26 @@ function get_subset(bitmask)
     end while
     return answer
 end function
+
+
+字典树：
+struct TrieNode {
+    int frequency = 0;
+    TrieNode* child[26];
+
+    TrieNode() {
+        for (int i = 0; i < 26; ++i) {
+            child[i] = nullptr;
+        }
+    }
+};
+auto add = [&](const string& word) {
+    TrieNode* cur = root;
+    for (char ch : word) {
+        if (!cur->child[ch - 'a']) {
+            cur->child[ch - 'a'] = new TrieNode();
+        }
+        cur = cur->child[ch - 'a'];
+    }
+    ++cur->frequency;
+};
