@@ -63,6 +63,21 @@ left不动，right向右移动；条件不满足再移动left直到条件满足;
 
 连续数组问题：
 可以考虑前缀和；两个前缀和相减即是中间和的长度；
+class NumArray {
+public:
+    vector<int> sums;
+    NumArray(vector<int>& nums) {
+        int n = nums.size();
+        sums.resize(n + 1);
+        for (int i = 0; i < n; i++) {
+            sums[i + 1] = sums[i] + nums[i];
+        }
+    }
+
+    int sumRange(int i, int j) {
+        return sums[j + 1] - sums[i];
+    }
+};
 
 状态压缩： 1178. 猜字谜
 枚举二进制子集：
@@ -98,3 +113,4 @@ auto add = [&](const string& word) {
     }
     ++cur->frequency;
 };
+
