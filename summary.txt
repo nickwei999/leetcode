@@ -63,6 +63,7 @@ left不动，right向右移动；条件不满足再移动left直到条件满足;
 
 连续数组问题：
 可以考虑前缀和；两个前缀和相减即是中间和的长度；
+二维前缀和 参考：range-sum-query-2d-immutable.cpp 304. 二维区域和检索
 class NumArray {
 public:
     vector<int> sums;
@@ -78,6 +79,7 @@ public:
         return sums[j + 1] - sums[i];
     }
 };
+
 
 状态压缩： 1178. 猜字谜
 枚举二进制子集：
