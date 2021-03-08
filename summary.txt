@@ -8,6 +8,20 @@
 2、二叉搜索树，左节点小于等于本节点、右节点大于等于本节点；——中序遍历后，是非递减的有序序列；
 
 3、遍历加回溯的运用；
+131. 分割回文串
+void bt() {
+    if(end()) {
+        res.push_back(ans);
+        return;
+    }
+    for (;;) {
+        if(cond) {
+            ans.push_back
+            bt
+            ans.pop_back
+        }
+    }
+}
 
 4、并查集：
 
